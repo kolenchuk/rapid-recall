@@ -92,6 +92,12 @@ function goToReader(id: string) {
       <p class="text-sm text-slate-600 dark:text-slate-300">
         Create sets, import words (one per line), pick the active set, and export words.
       </p>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
+        <li>Create a set, then paste words with one entry per line (duplicates are removed).</li>
+        <li>Edit words inline at any time; use “Replace existing words” to overwrite instead of append.</li>
+        <li>Click ▶ on a set or “▶ Reader” to start reading that set from its saved position.</li>
+        <li>Use Export to copy all words for backups or sharing.</li>
+      </ul>
       <form class="mt-4 flex flex-col gap-3 sm:flex-row" @submit.prevent="createSet">
         <input
           v-model="newSetName"
