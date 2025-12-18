@@ -1,25 +1,36 @@
 # RapidRecall
 
-PWA for speed-reading single words to recall foreign vocabulary. Supports multiple word sets stored locally, per-set progress, and keyboard shortcuts for quick control.
+Offline-first speed reader to drill vocabulary one word at a time. Manage sets locally, track per-set progress/WPM, and read with keyboard-friendly controls.
 
 ## Stack
 - Vite 7 + Vue 3 + TypeScript
-- Pinia for state, Vue Router
-- Tailwind CSS for styling
-- Vitest + Vue Test Utils for tests
-- `vite-plugin-pwa` for offline/installable usage
+- Pinia (state), Vue Router, Tailwind CSS
+- Vitest + Vue Test Utils
+- `vite-plugin-pwa` for install/offline
 
-## Scripts
-- `npm install` — install dependencies.
-- `npm run dev` — start the Vite dev server.
-- `npm run build` — type-check and build for production.
-- `npm run preview` — preview the production build.
-- `npm test` — run Vitest.
+## Getting Started
+```bash
+npm install
+npm run dev
+```
+Then open http://localhost:5173. Word sets persist in `localStorage` (no backend required).
 
-## Core features
-- Library view: create/delete/rename sets, import (one word per line) with duplicate filtering, export to clipboard, choose active set.
-- Reader view: play/pause, prev/next/start/end navigation, WPM slider (50–800, default 100), keyboard shortcuts (Space/Arrow keys), and per-set progress/WPM persistence in `localStorage`.
-- Highlight focus letter using an ORP rule (position based on word length).
-- Theme toggle (light/dark) persisted locally.
+### Scripts
+- `npm run dev` – start HMR dev server.
+- `npm run build` – type-check and build to `dist/` (PWA assets included).
+- `npm run preview` – serve the production build locally.
+- `npm test` – run unit tests.
 
-Screenshots in repo: `photo_2025-12-18_11-03-17.jpg`, `photo_2025-12-18_11-04-16.jpg`.
+## App Guide
+- Library: create/rename/delete sets, import/export (one word per line), edit words, start reading a set.
+- Reader: play/pause, start/end, prev/next, WPM slider (50–800, default 100), per-set progress. ORP highlighting shows the focus letter per word.
+- Keyboard: Space = play/pause, ←/→ = prev/next, ↑/↓ = speed.
+- Theme: light/dark toggle, persisted locally.
+
+## Build & Deploy (GitHub Pages)
+Vite base is preset to `/rapid-recall/` for https://kolenchuk.github.io/rapid-recall/.
+```bash
+npm run build
+npx gh-pages -d dist     # publishes dist/ to gh-pages
+```
+Enable Pages on the `gh-pages` branch (folder `/`) in GitHub settings. For other hosts, adjust `base` in `vite.config.ts` as needed and rebuild.
