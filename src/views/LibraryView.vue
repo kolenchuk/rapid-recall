@@ -50,6 +50,24 @@ function handleImport() {
   return count
 }
 
+async function importFromFile(event: Event) {
+  if (!activeSet.value) return
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  try {
+    const text = await file.text()
+    if (replaceMode.value) {
+      wordSets.replaceWords(activeSet.value.id, text)
+    } else {
+      wordSets.importWords(activeSet.value.id, text)
+    }
+    editText.value = activeSet.value.words.join('\n')
+  } finally {
+    input.value = ''
+  }
+}
+
 function exportWords() {
   if (!activeSet.value) return
   const text = wordSets.exportWords(activeSet.value.id)
@@ -59,6 +77,21 @@ function exportWords() {
       setTimeout(() => (copied.value = false), 1500)
     })
   }
+  return text
+}
+
+function downloadWordsFile() {
+  if (!activeSet.value) return
+  const text = wordSets.exportWords(activeSet.value.id)
+  const blob = new Blob([text], { type: 'text/plain' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${activeSet.value.name || 'words'}.txt`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
   return text
 }
 
@@ -93,8 +126,9 @@ function goToReader(id: string) {
         Create sets, import words (one per line), pick the active set, and export words.
       </p>
       <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
-        <li>Create a set, then paste words with one entry per line (duplicates are removed).</li>
+        <li>Create a set, then paste or import words (one entry per line). Duplicates are removed.</li>
         <li>Edit words inline at any time; use “Replace existing words” to overwrite instead of append.</li>
+        <li>Import from a .txt file or paste; export by copying or downloading a .txt file for backup.</li>
         <li>Click ▶ on a set or “▶ Reader” to start reading that set from its saved position.</li>
         <li>Use Export to copy all words for backups or sharing.</li>
       </ul>
@@ -218,14 +252,18 @@ function goToReader(id: string) {
               <input v-model="replaceMode" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-slate-700 focus:ring-slate-500" />
               Replace existing words
             </label>
-          </div>
-          <textarea
-            v-model="importText"
-            rows="6"
-            placeholder="One word per line"
-            class="mt-3 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-          ></textarea>
-          <div class="mt-3 flex items-center justify-end gap-2">
+        </div>
+        <textarea
+          v-model="importText"
+          rows="6"
+          placeholder="One word per line"
+          class="mt-3 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+        ></textarea>
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <label class="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">
+              <input class="hidden" type="file" accept=".txt,text/plain" @change="importFromFile" />
+              📁 Import file
+            </label>
             <button
               type="button"
               class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
@@ -249,13 +287,20 @@ function goToReader(id: string) {
             <span class="text-xs text-slate-500">{{ activeSet.words.length }} words</span>
           </div>
           <p class="mt-1 text-sm text-slate-500">Copies all words to your clipboard.</p>
-          <div class="mt-3 flex items-center gap-2">
+          <div class="mt-3 flex flex-wrap items-center gap-2">
             <button
               type="button"
               class="rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
               @click="exportWords"
             >
               Copy words
+            </button>
+            <button
+              type="button"
+              class="rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold transition hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+              @click="downloadWordsFile"
+            >
+              Download .txt
             </button>
             <span class="text-xs text-green-600" v-if="copied">Copied!</span>
           </div>
