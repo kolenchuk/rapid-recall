@@ -15,7 +15,14 @@ type PersistedState = {
 }
 
 const STORAGE_KEY = 'rapid-recall:word-sets'
+const WPM_MIN = 1
+const WPM_MAX = 300
 const DEFAULT_WPM = 100
+
+function clampWpm(value: number | undefined) {
+  const num = typeof value === 'number' ? value : DEFAULT_WPM
+  return Math.min(Math.max(WPM_MIN, num), WPM_MAX)
+}
 
 function normalizeLines(text: string): string[] {
   return text
@@ -53,7 +60,10 @@ export const useWordSets = defineStore('wordSets', {
   actions: {
     hydrate() {
       const data = loadState()
-      this.sets = data.sets ?? []
+      this.sets = (data.sets ?? []).map((set) => ({
+        ...set,
+        wpm: clampWpm(set.wpm),
+      }))
       this.activeSetId = data.activeSetId ?? null
     },
     persist() {
@@ -133,7 +143,7 @@ export const useWordSets = defineStore('wordSets', {
     setWpm(id: string, wpm: number) {
       const set = this.sets.find((s) => s.id === id)
       if (!set) return
-      const bounded = Math.min(Math.max(50, wpm), 800)
+      const bounded = clampWpm(wpm)
       set.wpm = bounded
       this.persist()
     },

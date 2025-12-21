@@ -248,14 +248,14 @@ onBeforeUnmount(() => {
               {{ activeSet?.wpm ?? 100 }}
             </div>
           </div>
-          <div class="text-xs text-slate-500">Range 50–800</div>
+          <div class="text-xs text-slate-500">Range 1–300</div>
         </div>
         <input
           v-if="activeSet"
           type="range"
-          min="50"
-          max="800"
-          step="5"
+          min="1"
+          max="300"
+          step="1"
           :value="activeSet.wpm"
           class="mt-3 w-full accent-slate-600"
           @input="updateWpm(Number(($event.target as HTMLInputElement).value))"

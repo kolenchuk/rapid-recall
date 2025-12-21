@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 .n
+deploy-pages.sh
+FUTURE_PLAN.md
 
 # Editor directories and files
 .vscode/*

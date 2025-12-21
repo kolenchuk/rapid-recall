@@ -23,7 +23,7 @@ Then open http://localhost:5173. Word sets persist in `localStorage` (no backend
 
 ## App Guide
 - Library: create/rename/delete sets, import/export (one word per line), edit words, start reading a set.
-- Reader: play/pause, start/end, prev/next, WPM slider (50–800, default 100), per-set progress. ORP highlighting shows the focus letter per word.
+- Reader: play/pause, start/end, prev/next, WPM slider (1–300, default 100), per-set progress. ORP highlighting shows the focus letter per word.
 - Keyboard: Space = play/pause, ←/→ = prev/next, ↑/↓ = speed.
 - Theme: light/dark toggle, persisted locally.
 
